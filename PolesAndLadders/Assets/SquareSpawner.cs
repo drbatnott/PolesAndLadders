@@ -6,6 +6,7 @@ public class SquareSpawner : MonoBehaviour {
 	public GameObject counter;
 	public GameObject protoSquare;
 	GameObject [] square1;
+	public GameObject dice;
 	public GameObject board;
 	public Text thrown;
 	int start = 0;
@@ -54,8 +55,11 @@ public class SquareSpawner : MonoBehaviour {
 		t.position = new Vector3 (boardLeft + 0.6f, 1.03f);
 		//check visually this is inside the board left square column */
 	}
-
+	public void Roll(){
+		this.GetComponent<AnimateDice> ().rolling = true;
+	}
 	public void Throw(){
+
 		Transform t = counter.GetComponent<Transform> ();
 		int r = Random.Range (1, 6);
 		thrown.text = r.ToString();
