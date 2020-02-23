@@ -16,8 +16,9 @@ public class AnimateDice : MonoBehaviour {
 			Roll ();
 		}
 	}
-	
-	// Update is called once per frame
+
+
+
 	public void Roll () {
 			int i = Random.Range (1,3);
 			switch (i){

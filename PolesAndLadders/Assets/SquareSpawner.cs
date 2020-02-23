@@ -56,13 +56,14 @@ public class SquareSpawner : MonoBehaviour {
 		//check visually this is inside the board left square column */
 	}
 	public void Roll(){
-		this.GetComponent<AnimateDice> ().rolling = true;
+		//this.GetComponent<AnimateDice> ().rolling = true;
 	}
 	public void Throw(){
 
 		Transform t = counter.GetComponent<Transform> ();
 		int r = Random.Range (1, 6);
 		thrown.text = r.ToString();
+		dice.GetComponent<AlignTheDice> ().AlignFace (r);
 		start += r;
 		if (start < 80) {
 			Vector3 where = square1 [start].GetComponent<Transform> ().position;
@@ -83,8 +84,10 @@ public class SquareSpawner : MonoBehaviour {
 		timenow += Time.deltaTime;
 		//Debug.Log (timenow);
 		if (timenow >= 1 && notOver) {
+			this.GetComponent<AnimateDice> ().rolling = false;
 			Throw ();
 			timenow = 0;
+
 		}
 	}
 }
