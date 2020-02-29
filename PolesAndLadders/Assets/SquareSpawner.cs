@@ -10,12 +10,20 @@ public class SquareSpawner : MonoBehaviour {
 	public GameObject board;
 	public Text thrown;
 	int start = 0;
+	float timeSinceRolled;
 	float timenow;//, timethen;
 	bool notOver = true;
+	bool rolling;
+	bool rolled;
+	int whoseGo;
 	// Use this for initialization
 	void Start () {
 		timenow = 0;
 		//timethen = 0;
+		whoseGo = 0;
+		rolling = false;
+		rolled = false;
+		timeSinceRolled = 0;
 		float boardLeft = board.GetComponent<BoardLocations> ().left + 0.6f;
 		float currentSquareLocX = boardLeft;
 		float boardBottom = board.GetComponent<BoardLocations> ().bottom;
@@ -56,7 +64,7 @@ public class SquareSpawner : MonoBehaviour {
 		//check visually this is inside the board left square column */
 	}
 	public void Roll(){
-		//this.GetComponent<AnimateDice> ().rolling = true;
+		rolling = true;
 	}
 	public void Throw(){
 
@@ -81,6 +89,30 @@ public class SquareSpawner : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
+		switch (whoseGo) {
+		case 0:
+			if(rolling && !rolled){
+				rolled = true;
+				timeSinceRolled = 0;
+			}
+			else{
+				if(rolling){
+					timeSinceRolled += Time.deltaTime;
+					this.GetComponent<AnimateDice> ().Roll ();
+					if(timeSinceRolled >=2){
+						Throw();
+						rolling = false;
+						rolled = false;
+						timeSinceRolled = 0;
+						//this.GetComponent<AnimateDice> ().rolling = false;
+					}
+				}
+			}
+			break;
+		default:
+			break;
+		}
+		/*
 		timenow += Time.deltaTime;
 		//Debug.Log (timenow);
 		if (timenow >= 1 && notOver) {
@@ -89,5 +121,6 @@ public class SquareSpawner : MonoBehaviour {
 			timenow = 0;
 
 		}
+		*/
 	}
 }

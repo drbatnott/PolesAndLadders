@@ -12,30 +12,37 @@ public class AnimateDice : MonoBehaviour {
 		t = dice.GetComponent<Transform> ();
 	}
 	void Update(){
-		if (rolling) {
+		/*if (rolling) {
 			Roll ();
-		}
+		}*/
 	}
 
 
 
 	public void Roll () {
-			int i = Random.Range (1,3);
-			switch (i){
+			int i = Random.Range (1,6);
+	
+			switch (i) {
 			case 1:
-			t.Rotate(new Vector3(10f,0f,0f));
+				t.rotation = new Quaternion (0.7071f, 0f, 0f, 0.7071f);
 				break;
 			case 2:
-			t.Rotate(new Vector3(0f,10f,0f));
-
+				t.rotation = new Quaternion (0f, -0.7071f, 0f, 0.7071f);
 				break;
 			case 3:
-			t.Rotate(new Vector3(0f,0f,10f));
-
+				t.rotation = new Quaternion (1f, 0f, 0f, 0f);
 				break;
-			default:
+			case 4:
+				t.rotation = new Quaternion (0f, 0f, 0f, 1f);
+				break;
+			case 5:
+				t.rotation = new Quaternion (0f, 0.7071f, 0f, 0.7071f);
+				break;
+			case 6:
+				t.rotation = new Quaternion (-0.7071f, 0f, 0f, 0.7071f);
 				break;
 			}
+			
 		}
 	}
 
