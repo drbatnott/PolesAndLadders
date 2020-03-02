@@ -79,6 +79,7 @@ public class SquareSpawner : MonoBehaviour {
 			break;
 
 		}
+		Debug.Log (whoseGoNow);
 		int r = Random.Range (1, 6);
 		thrown.text = r.ToString();
 		dice.GetComponent<AlignTheDice> ().AlignFace (r);
@@ -101,12 +102,15 @@ public class SquareSpawner : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (notOver) {
+			Debug.Log (whoseGo);
+			Debug.Log ("Rolling " + rolling + " Rolled" + rolled);
 			switch (whoseGo) {
 			case 0:
 				if (rolling && !rolled) {
 					rolled = true;
 					timeSinceRolled = 0;
-				} else {
+				}
+				else{
 					if (rolling) {
 						timeSinceRolled += Time.deltaTime;
 						this.GetComponent<AnimateDice> ().Roll ();
@@ -115,14 +119,19 @@ public class SquareSpawner : MonoBehaviour {
 							rolling = false;
 							rolled = false;
 							timeSinceRolled = 0;
+							whoseGo = 1;
+							rolling = true;
+							Debug.Log ("Rolling " + rolling + " Rolled" + rolled);
 							//this.GetComponent<AnimateDice> ().rolling = false;
 						}
 					}
 				}
-				if(!rolling && notOver){
+				/*
+				if(!rolling && notOver && !rolled){
 					whoseGo = 1;
 					rolling = true;
-				}
+					Debug.Log ("Rolling " + rolling + " Rolled" + rolled);
+				}*/
 				break;
 			case 1:
 				if (rolling && !rolled) {
@@ -137,14 +146,13 @@ public class SquareSpawner : MonoBehaviour {
 							rolling = false;
 							rolled = false;
 							timeSinceRolled = 0;
+							whoseGo = 0;
 							//this.GetComponent<AnimateDice> ().rolling = false;
 						}
 					}
 				}
 
-				if(!rolling && notOver){
-					whoseGo = 0;
-				}
+
 				break;
 
 			default:
