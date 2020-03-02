@@ -17,6 +17,9 @@ public class SquareSpawner : MonoBehaviour {
 	bool rolling;
 	bool rolled;
 	int whoseGo;
+	bool morePlay;
+	public Text winner;
+	public GameObject playAgain;
 	// Use this for initialization
 	void Start () {
 		//timenow = 0;
@@ -90,9 +93,17 @@ public class SquareSpawner : MonoBehaviour {
 			t.position = where;
 		} else {
 			if(startThis == 80){
-				notOver = false;
 				Vector3 where = square1 [startThis].GetComponent<Transform> ().position;
 				t.position = where;
+				notOver = false;
+				winner.text = "The winner is ";
+				if(whoseGoNow == 0){
+					winner.text += "you!";
+				}
+				else{
+					winner.text += "player " + whoseGoNow.ToString ();
+				}
+				playAgain.SetActive (true);
 			}
 			else{
 				startThis -= r;
