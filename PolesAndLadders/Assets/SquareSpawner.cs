@@ -4,12 +4,13 @@ using UnityEngine.UI;
 
 public class SquareSpawner : MonoBehaviour {
 	public GameObject counter;
+	public GameObject NPC;
 	public GameObject protoSquare;
 	GameObject [] square1;
 	public GameObject dice;
 	public GameObject board;
 	public Text thrown;
-	int start = 0;
+	int [] start = {0,0};
 	float timeSinceRolled;
 	float timenow;//, timethen;
 	bool notOver = true;
@@ -18,7 +19,7 @@ public class SquareSpawner : MonoBehaviour {
 	int whoseGo;
 	// Use this for initialization
 	void Start () {
-		timenow = 0;
+		//timenow = 0;
 		//timethen = 0;
 		whoseGo = 0;
 		rolling = false;
@@ -66,51 +67,89 @@ public class SquareSpawner : MonoBehaviour {
 	public void Roll(){
 		rolling = true;
 	}
-	public void Throw(){
+	public void Throw(int whoseGoNow){
+		Transform t= counter.GetComponent<Transform> ();
+		int startThis = start[whoseGoNow];
+		switch (whoseGoNow) {
+		case 0:
+			 t = counter.GetComponent<Transform> ();
+			break;
+		case 1:
+			t = NPC.GetComponent<Transform> ();
+			break;
 
-		Transform t = counter.GetComponent<Transform> ();
+		}
 		int r = Random.Range (1, 6);
 		thrown.text = r.ToString();
 		dice.GetComponent<AlignTheDice> ().AlignFace (r);
-		start += r;
-		if (start < 80) {
-			Vector3 where = square1 [start].GetComponent<Transform> ().position;
+		startThis += r;
+		if (startThis < 80) {
+			Vector3 where = square1 [startThis].GetComponent<Transform> ().position;
 			t.position = where;
 		} else {
-			if(start == 80){
+			if(startThis == 80){
 				notOver = false;
-				Vector3 where = square1 [start].GetComponent<Transform> ().position;
+				Vector3 where = square1 [startThis].GetComponent<Transform> ().position;
 				t.position = where;
 			}
 			else{
-				start -= r;
+				startThis -= r;
 			}
 		}
+		start [whoseGoNow] = startThis;
 	}
 	// Update is called once per frame
 	void Update () {
-		switch (whoseGo) {
-		case 0:
-			if(rolling && !rolled){
-				rolled = true;
-				timeSinceRolled = 0;
-			}
-			else{
-				if(rolling){
-					timeSinceRolled += Time.deltaTime;
-					this.GetComponent<AnimateDice> ().Roll ();
-					if(timeSinceRolled >=2){
-						Throw();
-						rolling = false;
-						rolled = false;
-						timeSinceRolled = 0;
-						//this.GetComponent<AnimateDice> ().rolling = false;
+		if (notOver) {
+			switch (whoseGo) {
+			case 0:
+				if (rolling && !rolled) {
+					rolled = true;
+					timeSinceRolled = 0;
+				} else {
+					if (rolling) {
+						timeSinceRolled += Time.deltaTime;
+						this.GetComponent<AnimateDice> ().Roll ();
+						if (timeSinceRolled >= 1) {
+							Throw (whoseGo);
+							rolling = false;
+							rolled = false;
+							timeSinceRolled = 0;
+							//this.GetComponent<AnimateDice> ().rolling = false;
+						}
 					}
 				}
+				if(!rolling && notOver){
+					whoseGo = 1;
+					rolling = true;
+				}
+				break;
+			case 1:
+				if (rolling && !rolled) {
+					rolled = true;
+					timeSinceRolled = 0;
+				} else {
+					if (rolling) {
+						timeSinceRolled += Time.deltaTime;
+						this.GetComponent<AnimateDice> ().Roll ();
+						if (timeSinceRolled >= 1) {
+							Throw (whoseGo);
+							rolling = false;
+							rolled = false;
+							timeSinceRolled = 0;
+							//this.GetComponent<AnimateDice> ().rolling = false;
+						}
+					}
+				}
+
+				if(!rolling && notOver){
+					whoseGo = 0;
+				}
+				break;
+
+			default:
+				break;
 			}
-			break;
-		default:
-			break;
 		}
 		/*
 		timenow += Time.deltaTime;
