@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 public class SquareSpawner : MonoBehaviour {
 	public GameObject counter;
-	public GameObject NPC;
+	public GameObject[] NPC;
 	public GameObject protoSquare;
 	GameObject [] square1;
 	public GameObject dice;
 	public GameObject board;
 	public Text thrown;
-	int [] start = {0,0};
+	int [] start = {0,0,0};
 	float timeSinceRolled;
 	float timenow;//, timethen;
 	bool notOver = true;
@@ -75,7 +75,8 @@ public class SquareSpawner : MonoBehaviour {
 			 t = counter.GetComponent<Transform> ();
 			break;
 		case 1:
-			t = NPC.GetComponent<Transform> ();
+		case 2:
+			t = NPC[whoseGoNow-1].GetComponent<Transform> ();
 			break;
 
 		}
@@ -134,6 +135,7 @@ public class SquareSpawner : MonoBehaviour {
 				}*/
 				break;
 			case 1:
+			case 2:
 				if (rolling && !rolled) {
 					rolled = true;
 					timeSinceRolled = 0;
@@ -143,11 +145,15 @@ public class SquareSpawner : MonoBehaviour {
 						this.GetComponent<AnimateDice> ().Roll ();
 						if (timeSinceRolled >= 1) {
 							Throw (whoseGo);
-							rolling = false;
 							rolled = false;
 							timeSinceRolled = 0;
-							whoseGo = 0;
-							//this.GetComponent<AnimateDice> ().rolling = false;
+							int n = NPC.Length;
+							whoseGo++;
+							if(whoseGo > n){
+								whoseGo = 0;
+								rolling = false;
+							}
+							Debug.Log ("who " + whoseGo + " Rolling " + rolling + " Rolled" + rolled);
 						}
 					}
 				}
