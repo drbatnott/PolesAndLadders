@@ -79,7 +79,9 @@ public class SquareSpawner : MonoBehaviour {
             ladders[i] = GameObject.Instantiate(protoLadder);
             int k = Random.Range(j, j + 10);
             Transform lt = ladders[i].GetComponent<Transform>();
-            lt.position = square1[k].GetComponent<Transform>().position;
+			Vector3 pos = square1[k].GetComponent<Transform>().position;
+			pos.y += 0.5f;
+			lt.position = pos;
             j += 10;
         }
     }
@@ -130,8 +132,8 @@ public class SquareSpawner : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (notOver) {
-			Debug.Log (whoseGo);
-			Debug.Log ("Rolling " + rolling + " Rolled" + rolled);
+			//Debug.Log (whoseGo);
+			//Debug.Log ("Rolling " + rolling + " Rolled" + rolled);
 			switch (whoseGo) {
 			case 0:
 				if (rolling && !rolled) {
