@@ -1,3 +1,7 @@
-Base path: C:/Program Files/Unity/Hub/Editor/2019.3.0f6/Editor/Data
-Pipe name: \\.\pipe\UnityShaderCompiler-64bit-1-16540
+Base path: C:/Program Files (x86)/Unity/Editor/Data
+Pipe name: \\.\pipe\UnityShaderCompiler-64bit-1-113228
 Cmd: getPlatforms
+Unhandled exception: Readfile from pipe failed. GLE=The pipe has been ended.
+
+
+Quitting shader compiler process

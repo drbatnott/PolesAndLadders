@@ -6,7 +6,9 @@ public class SquareSpawner : MonoBehaviour {
 	public GameObject counter;
 	public GameObject[] NPC;
 	public GameObject protoSquare;
+    public GameObject protoLadder;
 	GameObject [] square1;
+    GameObject [] ladders;
 	public GameObject dice;
 	public GameObject board;
 	public Text thrown;
@@ -66,7 +68,21 @@ public class SquareSpawner : MonoBehaviour {
 		//Initially set location of square 1 to be 0.6 from boardLeft
 		t.position = new Vector3 (boardLeft + 0.6f, 1.03f);
 		//check visually this is inside the board left square column */
+        NewGame();
 	}
+    void NewGame()
+    {
+        ladders = new GameObject[5];
+        int j = 11;
+        for (int i = 0; i < 5; i++)
+        {
+            ladders[i] = GameObject.Instantiate(protoLadder);
+            int k = Random.Range(j, j + 10);
+            Transform lt = ladders[i].GetComponent<Transform>();
+            lt.position = square1[k].GetComponent<Transform>().position;
+            j += 10;
+        }
+    }
 	public void Roll(){
 		rolling = true;
 	}
@@ -83,7 +99,7 @@ public class SquareSpawner : MonoBehaviour {
 			break;
 
 		}
-		Debug.Log (whoseGoNow);
+		//Debug.Log (whoseGoNow);
 		int r = Random.Range (1, 6);
 		thrown.text = r.ToString();
 		dice.GetComponent<AlignTheDice> ().AlignFace (r);
@@ -133,7 +149,7 @@ public class SquareSpawner : MonoBehaviour {
 							timeSinceRolled = 0;
 							whoseGo = 1;
 							rolling = true;
-							Debug.Log ("Rolling " + rolling + " Rolled" + rolled);
+							//Debug.Log ("Rolling " + rolling + " Rolled" + rolled);
 							//this.GetComponent<AnimateDice> ().rolling = false;
 						}
 					}
@@ -164,7 +180,7 @@ public class SquareSpawner : MonoBehaviour {
 								whoseGo = 0;
 								rolling = false;
 							}
-							Debug.Log ("who " + whoseGo + " Rolling " + rolling + " Rolled" + rolled);
+							//Debug.Log ("who " + whoseGo + " Rolling " + rolling + " Rolled" + rolled);
 						}
 					}
 				}
