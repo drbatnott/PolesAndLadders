@@ -7,8 +7,17 @@ public class SquareSpawner : MonoBehaviour {
 	public GameObject[] NPC;
 	public GameObject protoSquare;
     public GameObject protoLadder;
+	public GameObject protoPole;
+	int ladderStart = 1;
+	int ladderEnd = 2;
+	int poleStart = 3;
+	int poleEnd = 4;
+	int ladderLink = 5;
+	int poleLink = 6;
+	int emptySquare = 0;
 	GameObject [] square1;
     GameObject [] ladders;
+	GameObject [] poles;
 	public GameObject dice;
 	public GameObject board;
 	public Text thrown;
@@ -37,6 +46,7 @@ public class SquareSpawner : MonoBehaviour {
 		square1 = new GameObject[81];
 		square1 [0] = GameObject.Instantiate (protoSquare);
 		square1 [0].GetComponent<Square> ().number = 0;
+		square1 [0].GetComponent<Square> ().type = emptySquare;
 		float mult = 1f;
 		Transform t = square1 [0].GetComponent<Transform> ();
 		//Initially set location of square 1 to be 0.6 from boardLeft
@@ -45,6 +55,7 @@ public class SquareSpawner : MonoBehaviour {
 		for (int i = 1; i < 81; i++) {
 			square1 [i] = GameObject.Instantiate (protoSquare);
 			square1 [i].GetComponent<Square> ().number = i;
+			square1 [i].GetComponent<Square> ().type = emptySquare;
 			t = square1 [i].GetComponent<Transform> ();
 			//Initially set location of square 1 to be 0.6 from boardLeft
 			t.position = new Vector3 (currentSquareLocX , currentSquareLocY);
@@ -73,17 +84,53 @@ public class SquareSpawner : MonoBehaviour {
     void NewGame()
     {
         ladders = new GameObject[5];
+		poles = new GameObject[5];
+		int i;
+		for (i = 1; i < 81; i++) {
+			square1 [i].GetComponent<Square> ().type = emptySquare;
+		}
         int j = 11;
-        for (int i = 0; i < 5; i++)
+		int l = 79;
+		int k;
+		Transform lt;
+		Vector3 pos;
+        for (i = 0; i < 5; i++)
         {
             ladders[i] = GameObject.Instantiate(protoLadder);
-            int k = Random.Range(j, j + 10);
-            Transform lt = ladders[i].GetComponent<Transform>();
-			Vector3 pos = square1[k].GetComponent<Transform>().position;
+			k = Random.Range(j, j + 10);
+            lt = ladders[i].GetComponent<Transform>();
+			pos = square1[k].GetComponent<Transform>().position;
+			if(square1[k].GetComponent<Square>().type == ladderEnd){
+				square1[k].GetComponent<Square>().type = ladderLink;
+			}
+			else{
+				square1[k].GetComponent<Square>().type = ladderStart;
+			}
+			int rowNumber = j / 10;
+			//Debug.Log (rowNumber);
+			Debug.Log (10+j+k);
 			pos.y += 0.5f;
 			lt.position = pos;
-            j += 10;
+			j += 10;
         }
+		int m;
+		int sqType;
+		for (i = 0; i < 5; i++)
+		{
+			poles[i] = GameObject.Instantiate(protoPole);
+			do{
+				m = Random.Range (l - 8, l);
+				sqType = square1[m].GetComponent<Square>().type;
+			}
+			while(sqType != emptySquare);
+			square1[m].GetComponent<Square>().type = poleStart;
+			lt = poles[i].GetComponent<Transform>();
+			pos = square1[m].GetComponent<Transform>().position;
+			pos.y -= 0.6f;
+			lt.position = pos;
+			l -=10;
+		}
+
     }
 	public void Roll(){
 		rolling = true;
