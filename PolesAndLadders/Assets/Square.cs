@@ -4,7 +4,6 @@ using System.Collections;
 public class Square : MonoBehaviour {
 	public int number;
 	public int type;
-	public int start;
 	public int end;
 	// Use this for initialization
 

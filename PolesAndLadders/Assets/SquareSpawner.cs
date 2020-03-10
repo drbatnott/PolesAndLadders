@@ -81,8 +81,25 @@ public class SquareSpawner : MonoBehaviour {
 		//check visually this is inside the board left square column */
         NewGame();
 	}
-    void NewGame()
+    public void NewGame()
     {
+		whoseGo = 0;
+		winner.text = "";
+		playAgain.SetActive (false);
+		start [0] = start [1] = start [2] = 0;
+		Transform t;
+		Vector3 where = square1 [0].GetComponent<Transform> ().position;
+		t = counter.GetComponent<Transform> ();
+		t.position = where;
+		where.x -= 1.5f;
+		t = NPC[0].GetComponent<Transform> ();
+		t.position = where;
+		where.x -= 1.5f;
+		t = NPC[1].GetComponent<Transform> ();
+		t.position = where;
+		rolling = false;
+		rolled = false;
+		timeSinceRolled = 0;
         ladders = new GameObject[5];
 		poles = new GameObject[5];
 		int i;
@@ -106,9 +123,12 @@ public class SquareSpawner : MonoBehaviour {
 			else{
 				square1[k].GetComponent<Square>().type = ladderStart;
 			}
-			int rowNumber = j / 10;
+			//int rowNumber = j / 10;
 			//Debug.Log (rowNumber);
-			Debug.Log (10+j+k);
+			int p = 2*j + 19 - k;
+			square1[k].GetComponent<Square>().end = p;
+			//Debug.Log (j + " " + k + " " + p);
+			square1[p].GetComponent<Square>().type = ladderEnd;
 			pos.y += 0.5f;
 			lt.position = pos;
 			j += 10;
@@ -128,6 +148,11 @@ public class SquareSpawner : MonoBehaviour {
 			pos = square1[m].GetComponent<Transform>().position;
 			pos.y -= 0.6f;
 			lt.position = pos;
+			int p = 2*l - 17 - m;
+			square1[m].GetComponent<Square>().end = p;
+			square1[p].GetComponent<Square>().type = poleEnd;
+			Debug.Log (l + " " + m + " " + p);
+			//square1[p].GetComponent<Square>().type = ladderEnd;
 			l -=10;
 		}
 
@@ -155,6 +180,20 @@ public class SquareSpawner : MonoBehaviour {
 		startThis += r;
 		if (startThis < 80) {
 			Vector3 where = square1 [startThis].GetComponent<Transform> ().position;
+			int typeOfSquare = square1 [startThis].GetComponent<Square>().type;
+			if(typeOfSquare != 0){
+				switch(typeOfSquare){
+				case 1://ladderstart
+				case 3:
+				case 5:
+					int endNum = square1 [startThis].GetComponent<Square>().end;
+					where = square1 [endNum].GetComponent<Transform> ().position;
+					startThis = endNum;
+					break;
+				default:
+					break;
+				}
+			}
 			t.position = where;
 		} else {
 			if(startThis == 80){
