@@ -9,6 +9,7 @@ public class SquareSpawner : MonoBehaviour {
     public GameObject protoLadder;
 	public GameObject protoPole;
 	public GameObject dice;
+	public Text currentPlayer;
 	Vector3 diceStart;
 	int ladderStart = 1;
 	int ladderEnd = 2;
@@ -22,6 +23,7 @@ public class SquareSpawner : MonoBehaviour {
 	GameObject [] poles;
 	public GameObject board;
 	public Text thrown;
+	public Text thrower;
 	int [] start = {0,0,0};
 	float timeSinceRolled;
 	float timenow;//, timethen;
@@ -32,6 +34,7 @@ public class SquareSpawner : MonoBehaviour {
 	bool morePlay;
 	public Text winner;
 	public GameObject playAgain;
+	float timewaiting = 0;
 	// Use this for initialization
 	void Start () {
 		//timenow = 0;
@@ -93,6 +96,10 @@ public class SquareSpawner : MonoBehaviour {
 		dice.GetComponent<Transform> ().position = diceStart;
 		notOver = true;
 		whoseGo = 0;
+		thrower.text = "";
+		thrown.text = "";
+		currentPlayer.text = "New Game You Start - Press Roll to go!";
+		timewaiting = 0;
 		winner.text = "";
 		playAgain.SetActive (false);
 		start [0] = start [1] = start [2] = 0;
@@ -171,56 +178,58 @@ public class SquareSpawner : MonoBehaviour {
 		int startThis = start[whoseGoNow];
 		switch (whoseGoNow) {
 		case 0:
-			 t = counter.GetComponent<Transform> ();
+			t = counter.GetComponent<Transform> ();
+			thrower.text = "You threw";
 			break;
 		case 1:
 		case 2:
 			t = NPC[whoseGoNow-1].GetComponent<Transform> ();
+			thrower.text = "Player " + whoseGoNow + " threw ";
 			break;
 
 		}
-		//Debug.Log (whoseGoNow);
-		int r = Random.Range (1, 6);
-		thrown.text = r.ToString();
-		dice.GetComponent<AlignTheDice> ().AlignFace (r);
-		dice.GetComponent<Transform> ().position = diceStart;
-		startThis += r;
-		if (startThis < 80) {
-			Vector3 where = square1 [startThis].GetComponent<Transform> ().position;
-			int typeOfSquare = square1 [startThis].GetComponent<Square>().type;
-			if(typeOfSquare != 0){
-				switch(typeOfSquare){
-				case 1://ladderstart
-				case 3:
-				case 5:
-					int endNum = square1 [startThis].GetComponent<Square>().end;
-					where = square1 [endNum].GetComponent<Transform> ().position;
-					startThis = endNum;
-					break;
-				default:
-					break;
-				}
-			}
-			t.position = where;
-		} else {
-			if(startThis == 80){
+
+			//Debug.Log (whoseGoNow);
+			int r = Random.Range (1, 7);
+			thrown.text = r.ToString ();
+			dice.GetComponent<AlignTheDice> ().AlignFace (r);
+			dice.GetComponent<Transform> ().position = diceStart;
+			startThis += r;
+			if (startThis < 80) {
 				Vector3 where = square1 [startThis].GetComponent<Transform> ().position;
+				int typeOfSquare = square1 [startThis].GetComponent<Square> ().type;
+				if (typeOfSquare != 0) {
+					switch (typeOfSquare) {
+					case 1://ladderstart
+					case 3:
+					case 5:
+						int endNum = square1 [startThis].GetComponent<Square> ().end;
+						where = square1 [endNum].GetComponent<Transform> ().position;
+						startThis = endNum;
+						break;
+					default:
+						break;
+					}
+				}
 				t.position = where;
-				notOver = false;
-				winner.text = "The winner is ";
-				if(whoseGoNow == 0){
-					winner.text += "you!";
+			} else {
+				if (startThis == 80) {
+					Vector3 where = square1 [startThis].GetComponent<Transform> ().position;
+					t.position = where;
+					notOver = false;
+					winner.text = "The winner is ";
+					if (whoseGoNow == 0) {
+						winner.text += "you!";
+					} else {
+						winner.text += "player " + whoseGoNow.ToString ();
+					}
+					playAgain.SetActive (true);
+				} else {
+					startThis -= r;
 				}
-				else{
-					winner.text += "player " + whoseGoNow.ToString ();
-				}
-				playAgain.SetActive (true);
 			}
-			else{
-				startThis -= r;
-			}
-		}
-		start [whoseGoNow] = startThis;
+			start [whoseGoNow] = startThis;
+
 	}
 	// Update is called once per frame
 	void Update () {
@@ -243,7 +252,7 @@ public class SquareSpawner : MonoBehaviour {
 							rolled = false;
 							timeSinceRolled = 0;
 							whoseGo = 1;
-							rolling = true;
+							//rolling = true;
 							//Debug.Log ("Rolling " + rolling + " Rolled" + rolled);
 							//this.GetComponent<AnimateDice> ().rolling = false;
 						}
@@ -258,6 +267,17 @@ public class SquareSpawner : MonoBehaviour {
 				break;
 			case 1:
 			case 2:
+				if(timewaiting == 0){
+					currentPlayer.text = "It's player " + whoseGo + "'s go now! Click Roll for them";
+				}
+				else {
+					if(timewaiting < 2){
+						timewaiting += Time.deltaTime;
+					}
+					else{
+						rolling = true;
+					}
+				}
 				if (rolling && !rolled) {
 					rolled = true;
 					timeSinceRolled = 0;
@@ -270,10 +290,12 @@ public class SquareSpawner : MonoBehaviour {
 							rolled = false;
 							timeSinceRolled = 0;
 							int n = NPC.Length;
+							rolling = false;
+							timewaiting = 0;
 							whoseGo++;
 							if(whoseGo > n){
 								whoseGo = 0;
-								rolling = false;
+								currentPlayer.text = "Your Go - Click Roll to go";
 							}
 							//Debug.Log ("who " + whoseGo + " Rolling " + rolling + " Rolled" + rolled);
 						}
